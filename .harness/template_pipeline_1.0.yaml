@@ -1,0 +1,33 @@
+template:
+  name: template pipeline
+  identifier: template_pipeline
+  versionLabel: "1.0"
+  type: Pipeline
+  projectIdentifier: david_stewart
+  orgIdentifier: December_2023
+  tags: {}
+  spec:
+    stages:
+      - stage:
+          name: hello
+          identifier: hello
+          description: ""
+          type: Custom
+          spec:
+            execution:
+              steps:
+                - step:
+                    type: ShellScript
+                    name: ShellScript_1
+                    identifier: ShellScript_1
+                    spec:
+                      shell: Bash
+                      onDelegate: true
+                      source:
+                        type: Inline
+                        spec:
+                          script: echo "Hello"
+                      environmentVariables: []
+                      outputVariables: []
+                    timeout: 10m
+          tags: {}
