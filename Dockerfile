@@ -6,8 +6,6 @@ RUN mkdir -p /podinfo/
 
 WORKDIR /podinfo
 
-COPY . .
-
 RUN go mod download
 
 RUN CGO_ENABLED=0 go build -ldflags "-s -w \
@@ -32,6 +30,7 @@ RUN addgroup -S app \
     ca-certificates curl netcat-openbsd
 
 WORKDIR /home/app
+COPY . .
 
 COPY --from=builder /podinfo/bin/podinfo .
 COPY --from=builder /podinfo/bin/podcli /usr/local/bin/podcli
