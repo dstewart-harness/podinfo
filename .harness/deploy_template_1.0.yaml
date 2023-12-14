@@ -1,5 +1,5 @@
 template:
-  name: deploy template
+  name: deploy template v2
   type: Stage
   projectIdentifier: david_stewart
   orgIdentifier: December_2023
