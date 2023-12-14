@@ -1,0 +1,72 @@
+template:
+  name: deploy template
+  type: Stage
+  projectIdentifier: david_stewart
+  orgIdentifier: December_2023
+  spec:
+    type: Deployment
+    spec:
+      deploymentType: NativeHelm
+      service:
+        serviceRef: Podinfo
+        serviceInputs:
+          serviceDefinition:
+            type: NativeHelm
+            spec:
+              artifacts:
+                primary:
+                  primaryArtifactRef: <+input>
+                  sources: <+input>
+      environment:
+        environmentRef: dev
+        deployToAll: false
+        infrastructureDefinitions:
+          - identifier: desktop_k8s
+      execution:
+        steps:
+          - step:
+              name: Helm Deployment
+              identifier: helmDeployment
+              type: HelmDeploy
+              timeout: 10m
+              spec:
+                skipDryRun: false
+          - step:
+              type: Http
+              name: Http_1
+              identifier: Http_1
+              spec:
+                url: https://harness-cd-canary.ai
+                method: GET
+                headers: []
+                inputVariables: []
+                outputVariables: []
+              timeout: 10s
+              failureStrategies:
+                - onFailure:
+                    errors:
+                      - AllErrors
+                    action:
+                      type: Retry
+                      spec:
+                        retryCount: 3
+                        retryIntervals:
+                          - 2s
+                        onRetryFailure:
+                          action:
+                            type: StageRollback
+        rollbackSteps:
+          - step:
+              name: Helm Rollback
+              identifier: helmRollback
+              type: HelmRollback
+              timeout: 10m
+              spec: {}
+    failureStrategies:
+      - onFailure:
+          errors:
+            - AllErrors
+          action:
+            type: StageRollback
+  identifier: deploy_template
+  versionLabel: "1.0"
